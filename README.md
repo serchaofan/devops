@@ -1,2 +1,1 @@
-# laogu-dockerfile
-## 存放Dockerfile，学习模仿为主
+## 存放Shell Scripts, Dockerfile, Python
