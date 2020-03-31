@@ -39,5 +39,12 @@ echo -e "\033[31m开始拉取镜像...\033[0m"
 # kubeadm config images list --config init-default.yml
 kubeadm config images pull --config init-default.yml
 
-echo -e "\033[33m---------------K8s Installation Completed-------------
-K8s version: v$(rpm -qa | grep kubectl | awk -F'-' '{print $2}') \033[0m"
+swapoff -a
+sysctl -w net.bridge.bridge-nf-call-iptables=1
+echo -e "\033[31m初始化...\033[0m"
+kubeadm init --config init-default.yml
+mkdir -p $HOME/.kube
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+chown $(id -u):$(id -g) $HOME/.kube/config
+echo -e "\033[33mConfigMap如下: 
+$(kubectl get -n kube-system configmaps) \033[0m"
