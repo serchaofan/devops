@@ -12,6 +12,24 @@ EOF
 
 yum makecache fast -y
 yum install -y kubelet kubeadm kubectl
+
+cat << EOF > /etc/sysctl.d/k8s.conf
+et.bridge.bridge-nf-call-iptables=1
+net.bridge.bridge-nf-call-ip6tables=1
+net.ipv4.ip_forward=1
+net.ipv4.tcp_tw_recycle=0
+vm.swappiness=0
+vm.overcommit_memory=1
+vm.panic_on_oom=0
+fs.inotify.max_user_watches=89100
+fs.file-max=52706963
+fs.nr_open=52706963
+net.ipv6.conf.all.disable_ipv6=1
+net.netfilter.nf_conntrack_max=2310720
+EOF
+
+swapoff -a
+sysctl -p
 systemctl enable kubelet && systemctl start kubelet
 echo -e "\033[31m是否安装etcd? (y/n)\033[0m"
 read choose
@@ -36,15 +54,12 @@ networking:
 EOF
 
 echo -e "\033[31m开始拉取镜像...\033[0m"
-# kubeadm config images list --config init-default.yml
 kubeadm config images pull --config init-default.yml
 
-swapoff -a
-sysctl -w net.bridge.bridge-nf-call-iptables=1
 echo -e "\033[31m初始化...\033[0m"
 kubeadm init --config init-default.yml
 mkdir -p $HOME/.kube
 cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 chown $(id -u):$(id -g) $HOME/.kube/config
-echo -e "\033[33mConfigMap如下: 
-$(kubectl get -n kube-system configmaps) \033[0m"
+echo -e "\033[33mConfigMap如下:  \033[0m"
+echo -e "\033[33m$(kubectl get -n kube-system configmaps)\033[0m"
