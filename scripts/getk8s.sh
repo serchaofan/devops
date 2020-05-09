@@ -29,7 +29,7 @@ net.netfilter.nf_conntrack_max=2310720
 EOF
 
 swapoff -a
-sysctl -p
+sysctl -p /etc/sysctl.d/k8s.conf &>/dev/null
 systemctl enable kubelet && systemctl start kubelet
 echo -e "\033[31m是否安装etcd? (y/n)\033[0m"
 read choose
