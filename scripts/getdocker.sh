@@ -8,6 +8,6 @@ systemctl start docker && systemctl enable docker
 echo "{\"registry-mirrors\": [\"https://docker.mirrors.ustc.edu.cn\"]}" > /etc/docker/daemon.json
 systemctl daemon-reload && systemctl restart docker
 sleep 1
-echo -e "\033[33m---------------Docker Installation Completed------------- \033[0m
-\033[33mDocker version:  \033[0m
-\033[33m$(docker version | head -n3 | egrep "Version|API version")\033[0m"
+echo -e "\033[32m---------------Docker Installation Completed------------- \033[0m
+\033[32mDocker version:  \033[0m
+\033[32m$(docker version | head -n3 | egrep "Version|API version")\033[0m"
