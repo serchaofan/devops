@@ -5,3 +5,4 @@
 # [ES单节点安装](./single-node-es-install.sh)
 # [centos下更新github的DNS记录](./update_github_dns.sh)
 # [初始化centos7系统](./system_init_centos7.sh)
+# [centos7安全基线加固](./centos-security.sh)
