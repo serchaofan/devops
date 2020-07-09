@@ -11,7 +11,10 @@ yum makecache fast
 
 # install lib
 echo -e "\033[32minstall lib\033[0m"
-yum groups install -y Development\ Tools
+yum groups mark install "Development Tools"
+yum groups mark convert "Development Tools"
+yum groups install -y "Development Tools"
+yum install -y bash-completion vim
 
 
 # close SELINUX and firewalld
