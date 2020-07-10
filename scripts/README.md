@@ -8,3 +8,4 @@
 - [初始化centos7系统](./init-centos7.sh)
 - [centos下更新github的DNS记录](./update-github-dns.sh)
 - [kubeadm初始化k8sMaster](./init-k8s-kubeadm.sh)
+- [centos7登录脚本](./motd.sh)
