@@ -12,6 +12,7 @@ index-url=https://mirrors.aliyun.com/pypi/simple
 EOF
 PYTHON_VER=$(python3 --version | awk -F" " '{print $2}')
 PIP_VER=$(pip3 --version | awk -F" " '{print $2}')
+pip3 install -U pip
 echo -e "\033[32m
 Python版本： $PYTHON_VER
 Pip版本： $PIP_VER

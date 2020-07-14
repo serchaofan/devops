@@ -7,6 +7,7 @@ hostnamectl set-hostname $hostname
 echo -e "\033[32mupdate yum source\033[0m"
 yum install -y wget && rm -f /etc/yum.repos.d/*
 wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
+wget -O /etc/yum.repos.d/epel.repo http://mirrors.aliyun.com/repo/epel-7.repo
 yum makecache fast
 
 # install lib
