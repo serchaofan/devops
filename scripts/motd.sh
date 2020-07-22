@@ -4,7 +4,7 @@
 load1=`cat /proc/loadavg | awk '{print $1}'`
 load5=`cat /proc/loadavg | awk '{print $2}'`
 load15=`cat /proc/loadavg | awk '{print $3}'`
-  
+
 #System uptime
 uptime=`cat /proc/uptime | cut -f1 -d.`
 upDays=$((uptime/60/60/24))
@@ -12,7 +12,7 @@ upHours=$((uptime/60/60%24))
 upMins=$((uptime/60%60))
 upSecs=$((uptime%60))
 up_lastime=`date -d "$(awk -F. '{print $1}' /proc/uptime) second ago" +"%Y-%m-%d %H:%M:%S"`
- 
+
 # CPU usage
 cpu_all=$(sar -u 1 1 | tail -n1)
 cpu_user=$(echo $cpu_all | awk '{print $3}')
@@ -31,11 +31,11 @@ mem_used=$(free -h | head -n2 | tail -n1 | awk '{print $3}')
 
 #Processes
 processes=`ps aux | wc -l`
-  
+
 #User
 users=`users | wc -w`
 USER=`whoami`
-  
+
 #System fs usage
 Filesystem=$(df -h | awk '/^\/dev/{print $6}')
 

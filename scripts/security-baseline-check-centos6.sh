@@ -10,24 +10,24 @@ echo -e "\033[32m当前CentOS版本：$(cat /etc/redhat-release | awk '{print $3
 echo -e "\033[32m当前内核版本：$(uname -r)\n\033[0m" >> /var/log/security_baseline_check.txt
 
 check_string_exists() {
-	if [[ $(sed -n "/$1/p" $2) == '' ]];then
-		echo -e "\033[31m✘ 文件:$2 \t检查项:\"$1\" \033[0m" >> /var/log/security_baseline_check.txt
-	else
-		echo -e "\033[32m√ 文件:$2 \t检查项:\"$1\" \033[0m" >> /var/log/security_baseline_check.txt
-	fi
+    if [[ $(sed -n "/$1/p" $2) == '' ]];then
+        echo -e "\033[31m✘ 文件:$2 \t检查项:\"$1\" \033[0m" >> /var/log/security_baseline_check.txt
+    else
+        echo -e "\033[32m√ 文件:$2 \t检查项:\"$1\" \033[0m" >> /var/log/security_baseline_check.txt
+    fi
 }
 
 check_string_correct() {
-	if [[ -e $3 ]];then		
-		ConfigItem=$(sed -n "/$1/p" $3 | sed 's/^[ \t]*//g' | head -n1)
-		if [[ $ConfigItem != $2 ]];then
-			echo -e "\033[31m✘ 文件:$3 \t检查项:\"$1\" \t期望值:\"$2\"\033[0m" >> /var/log/security_baseline_check.txt
-		else
-			echo -e "\033[32m√ 文件:$3 \t检查项:\"$1\"\033[0m" >> /var/log/security_baseline_check.txt
-		fi
-	else
-		echo -e "\033[31m✘ 文件:$3 \t 不存在\033[0m" >> /var/log/security_baseline_check.txt
-	fi
+    if [[ -e $3 ]];then
+        ConfigItem=$(sed -n "/$1/p" $3 | sed 's/^[ \t]*//g' | head -n1)
+        if [[ $ConfigItem != $2 ]];then
+            echo -e "\033[31m✘ 文件:$3 \t检查项:\"$1\" \t期望值:\"$2\"\033[0m" >> /var/log/security_baseline_check.txt
+        else
+            echo -e "\033[32m√ 文件:$3 \t检查项:\"$1\"\033[0m" >> /var/log/security_baseline_check.txt
+        fi
+    else
+        echo -e "\033[31m✘ 文件:$3 \t 不存在\033[0m" >> /var/log/security_baseline_check.txt
+    fi
 }
 
 check_rsyslog() {
@@ -42,51 +42,51 @@ check_rsyslog() {
         else
             echo -e "\033[32m√ 文件:$configfile \t检查项:\"$1\"\033[0m" >> /var/log/security_baseline_check.txt
         fi
-    else 
+    else
         echo -e "\033[31m✘ 文件:$configfile \t检查项:\"$1\" \t期望值:\"$2\"\033[0m" >> /var/log/security_baseline_check.txt
     fi
 }
 
 check_file_perm() {
-	file=$1
-	perm_expect=$2
-	if [ -e $file ];then	
-		perm=$(stat -c %a $file)
-		if [ $perm -gt $perm_expect ];then
-			echo -e "\033[31m✘ File:$file\t期望权限值:\"$2\" \033[0m" >> /var/log/security_baseline_check.txt
-		else
-			echo -e "\033[32m√ File:$file\t当前权限值: $perm\033[0m" >> /var/log/security_baseline_check.txt
-		fi
-	else
-		echo -e "\033[31m✘ File:$file 文件不存在. PASS\033[0m" >> /var/log/security_baseline_check.txt
-	fi
+    file=$1
+    perm_expect=$2
+    if [ -e $file ];then
+        perm=$(stat -c %a $file)
+        if [ $perm -gt $perm_expect ];then
+            echo -e "\033[31m✘ File:$file\t期望权限值:\"$2\" \033[0m" >> /var/log/security_baseline_check.txt
+        else
+            echo -e "\033[32m√ File:$file\t当前权限值: $perm\033[0m" >> /var/log/security_baseline_check.txt
+        fi
+    else
+        echo -e "\033[31m✘ File:$file 文件不存在. PASS\033[0m" >> /var/log/security_baseline_check.txt
+    fi
 }
 
 check_service_down() {
-	for service in $@;do
-		if [[ $(ls -l /etc/init.d/ | grep $service) != '' ]];then
-			if [[ $(/etc/init.d/$service status | grep 'running' | awk '{print $1}') == $service ]];then
-				echo -e "\033[31m✘ $service 正在运行 \033[0m" >> /var/log/security_baseline_check.txt
-			else
-				echo -e "\033[32m√ $service 未启动 \033[0m" >> /var/log/security_baseline_check.txt
-			fi
-		else
-			echo -e "\033[32m√ $service 服务不存在.\033[0m" >> /var/log/security_baseline_check.txt
-		fi
-	done
+    for service in $@;do
+        if [[ $(ls -l /etc/init.d/ | grep $service) != '' ]];then
+            if [[ $(/etc/init.d/$service status | grep 'running' | awk '{print $1}') == $service ]];then
+                echo -e "\033[31m✘ $service 正在运行 \033[0m" >> /var/log/security_baseline_check.txt
+            else
+                echo -e "\033[32m√ $service 未启动 \033[0m" >> /var/log/security_baseline_check.txt
+            fi
+        else
+            echo -e "\033[32m√ $service 服务不存在.\033[0m" >> /var/log/security_baseline_check.txt
+        fi
+    done
 }
 
 
 list_user_extra() {
-	echo -e "\033[32m非自建用户（uid>=500） \033[0m" >> /var/log/security_baseline_check.txt
-	echo -e "\033[32m$(awk -F':' '{if($3 >= 500) print $1,$3,$7}' /etc/passwd) \033[0m" >> /var/log/security_baseline_check.txt
-	
+    echo -e "\033[32m非自建用户（uid>=500） \033[0m" >> /var/log/security_baseline_check.txt
+    echo -e "\033[32m$(awk -F':' '{if($3 >= 500) print $1,$3,$7}' /etc/passwd) \033[0m" >> /var/log/security_baseline_check.txt
+    
 }
 
 echo -e "\n" >> /var/log/security_baseline_check.txt
 echo -e "\033[32m2.1.2.	口令复杂度和生存周期\033[0m" >> /var/log/security_baseline_check.txt
 echo -e "\033[32m口令策略的配置长度、复杂度安全要求\033[0m" >> /var/log/security_baseline_check.txt
-check_string_exists "password required pam_pwquality.so retry=3" /etc/pam.d/passwd 
+check_string_exists "password required pam_pwquality.so retry=3" /etc/pam.d/passwd
 check_string_exists "password required pam_pwquality.so dcredit=-1 ucredit=-1 ocredit=-1 lcredit=0 minlen=8" /etc/pam.d/system-auth
 echo -e "\n" >> /var/log/security_baseline_check.txt
 check_string_correct "minlen" "minlen = 8" /etc/security/pwquality.conf
@@ -110,7 +110,7 @@ echo -e "\033[32m禁用默认账号\033[0m"  >> /var/log/security_baseline_check
 check_string_exists '\/bin\/false' /etc/shells
 echo -e "\033[33m确认以下账号的权限为/bin/false\033[0m"  >> /var/log/security_baseline_check.txt
 for user in ftp sync nobody games;do
-	echo -e "\033[33m$(grep ^$user /etc/passwd | awk -F':' '{print $1,$3,$7}')\033[0m" >> /var/log/security_baseline_check.txt
+    echo -e "\033[33m$(grep ^$user /etc/passwd | awk -F':' '{print $1,$3,$7}')\033[0m" >> /var/log/security_baseline_check.txt
 done
 echo -e "\n" >> /var/log/security_baseline_check.txt
 echo -e "\033[32m2.2.1.	敏感文件权限最小化\033[0m" >> /var/log/security_baseline_check.txt
@@ -144,9 +144,9 @@ check_string_correct "PermitRootLogin" "PermitRootLogin yes" /etc/ssh/sshd_confi
 echo -e "\n" >> /var/log/security_baseline_check.txt
 echo -e "\033[32m2.4.3.	启用防火墙\033[0m" >> /var/log/security_baseline_check.txt
 if [[ $(ps -ef | grep iptables | grep -v 'grep') != '' ]];then
-	echo -e "\033[31m✘ Iptables正在运行 \033[0m" >> /var/log/security_baseline_check.txt
+    echo -e "\033[31m✘ Iptables正在运行 \033[0m" >> /var/log/security_baseline_check.txt
 else
-	echo -e "\033[32m√ Iptables未启动 \033[0m" >> /var/log/security_baseline_check.txt
+    echo -e "\033[32m√ Iptables未启动 \033[0m" >> /var/log/security_baseline_check.txt
 fi
 
 echo -e "\n" >> /var/log/security_baseline_check.txt

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+CHRONY_SERVER=192.168.3.100
+DNS_SERVER=192.168.3.100
+
 chown root:root /etc/passwd /etc/shadow /etc/group /etc/gshadow
 chmod 0644 /etc/group
 chmod 0644 /etc/passwd
@@ -14,49 +17,42 @@ sed -i '/umask/s/022/027/g' /etc/bashrc
 
 sed -i '/PASS_MAX_DAYS/s/99999/90/g' /etc/login.defs
 
-grep 'pam_stack.so' /etc/pam.d/passwd > /dev/null
-if [ $? != 0 ];then
+[ -z $(grep 'pam_stack.so' /etc/pam.d/passwd) ] && {
 cat  << EOF >> /etc/pam.d/passwd
 password   requisite    pam_pwquality.so  retry=5  minlen=8 lcredit=-1 ucredit=-1 ocredit=-1 dcredit=-1   pam_stack.so
 password   include      system-auth
 EOF
-fi
+}
 
-grep 'pam_faillock.so' /etc/pam.d/system-auth > /dev/null
-if [ $? != 0 ];then
+[ -z $(grep 'pam_faillock.so' /etc/pam.d/system-auth) ] && {
 cat << EOF >> /etc/pam.d/system-auth
 auth        required          pam_faillock.so    preauth    silent   audit deny=5 even_deny_root unlock_time=1800
 auth        sufficient        pam_unix.so        nullok     try_first_pass
 auth        [default=die]     pam_faillock.so    authfail   audit deny=5 even_deny_root unlock_time=1800
 account     required          pam_faillock.so
 EOF
-fi
+}
 
-grep 'pam_faillock.so' /etc/pam.d/password-auth > /dev/null
-if [ $? != 0 ];then
+[ -z $(grep 'pam_faillock.so' /etc/pam.d/password-auth) ] && {
 cat << EOF >> /etc/pam.d/password-auth
 auth        required      pam_faillock.so preauth silent audit deny=5 even_deny_root unlock_time=1800
 auth        sufficient    pam_unix.so nullok try_first_pass
 auth        [default=die] pam_faillock.so authfail audit deny=5 even_deny_root unlock_time=1800
 account     required      pam_faillock.so
 EOF
-fi
+}
 
-grep 'TIMEOUT' /etc/profile > /dev/null
-if [ $? != 0 ];then
+[ -z $(grep 'TIMEOUT' /etc/profile) ] && {
 cat << EOF >> /etc/profile
-TIMEOUT=1800
-export TIMEOUT
+export TIMEOUT=1800
 EOF
-fi
+}
 
 yum install -y chrony
-if [ $(systemctl is-active chronyd) != 'active' ];then 
-	 systemctl start chronyd
-fi
+systemctl start chronyd
 
 sed -i "/centos.pool/d" /etc/chrony.conf
-echo "server 192.168.13.100 iburst;" > /etc/chrony.conf
+sed -i  '3 i server $CHRONY_SERVER iburst;' /etc/chrony.conf
 systemctl restart chronyd
 systemctl enable chronyd
 
@@ -74,17 +70,17 @@ sysctl -p
 # :INPUT DROP [0:0]
 # :FORWARD ACCEPT [0:0]
 # :OUTPUT ACCEPT [0:0]
-# -A INPUT -s 192.0.19.201 -p tcp -m tcp --dport 22 -j ACCEPT 
+# -A INPUT -s 192.0.19.201 -p tcp -m tcp --dport 22 -j ACCEPT
 # -A INPUT -s 192.0.68.0/255.255.255.0 -p tcp -m tcp --dport 22 -j ACCEPT
 # -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-# -A INPUT -p icmp -j ACCEPT 
+# -A INPUT -p icmp -j ACCEPT
 # -A INPUT -i lo -j ACCEPT
 # COMMIT
 # EOF
 # systemctl restart iptables
 
 cat << EOF > /etc/resolv.conf
-nameserver 192.168.13.100
+nameserver $DNS_SERVER
 EOF
 
 sed -i '/PermitRootLogin/s/yes/no/g' /etc/ssh/sshd_config
