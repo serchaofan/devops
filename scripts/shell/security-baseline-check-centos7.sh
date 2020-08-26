@@ -9,6 +9,8 @@ LOGFILE=/var/log/security_baseline_check.txt
 echo > $LOGFILE
 alias echo="echo -e $1 >> $LOGFILE"
 
+[ -f "/etc/init.d/functions" ] && . /etc/init.d/functions
+
 system_info() {
     echo "\033[32m当前主机名：$(hostname)\033[0m"
     echo "\033[32m主机IP地址：\n$(ifconfig | grep inet | awk '{print $2}'| egrep -v '^172|^127')\033[0m"
