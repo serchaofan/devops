@@ -9,3 +9,6 @@
 - [centos下更新github的DNS记录](./update-github-dns.sh)
 - [kubeadm初始化k8sMaster](./init-k8s-kubeadm.sh)
 - [centos7登录脚本](./motd.sh)
+- [Linux系统信息](system-detect/server-info.sh)
+- [URL检测](system-detect/url-detect.sh)
+- [ansible初始化（分发ssh密钥）](./init-ansible.sh)

@@ -10,7 +10,6 @@ curl -L -w '
 请求完整URL:\t%{url_effective}
 跳转实际URL:\t%{redirect_url}
 HTTP返回码:\t%{http_code}
-URL协议:\t%{scheme}
 远端IP:\t%{remote_ip}
 远端端口:\t%{remote_port}
 
