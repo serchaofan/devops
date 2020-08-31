@@ -12,3 +12,5 @@
 - [Linux系统信息](system-detect/server-info.sh)
 - [URL检测](system-detect/url-detect.sh)
 - [ansible初始化（分发ssh密钥）](./init-ansible.sh)
+- [mysqld自动补全脚本](mysql/mysqld.bash)
+- [mysqld启动脚本](mysql/mysqld.sh)
