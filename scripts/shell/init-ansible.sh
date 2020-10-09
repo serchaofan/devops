@@ -54,7 +54,7 @@ EOF
 chmod +x ~/ssh-keygen.exp
 
 for num in {\$HOSTNUM_START..\$HOSTNUM_END}
-do 
+do
 	host=\${REMOTE_IP_PRE}\${num}
 	~/ssh-copy-id.exp \${USER}@\${host} \${PASSWD}
 done
