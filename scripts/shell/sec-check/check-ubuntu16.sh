@@ -42,7 +42,7 @@ Display() {
         RESULTPART=" [ ${COLOR}${RESULT}${NORMAL} ]"
         LINESIZE=$(echo "${TEXT}" | wc -m | tr -d ' ')
         SPACES=$((80 - LINESIZE))
-        echo -e "\033[0C${TEXT}\033[${SPACES}C${RESULTPART}" | tee -a $LOGFILE
+        echo "\033[0C${TEXT}\033[${SPACES}C${RESULTPART}" | tee -a $LOGFILE
     fi
 }
 
@@ -66,9 +66,9 @@ Display --text "================================================================
 
 CheckExists() {
     if [[ $(sed -n "/$1/p" $2) == '' ]];then
-        Display --text "$2CheckItem:    $1" --result "NotExists" --color RED
+        Display --text "$2   $1" --result "NotExists" --color RED
     else
-        Display --text "$2CheckItem:    $1" --result "Exists" --color GREEN
+        Display --text "$2   $1" --result "Exists" --color GREEN
     fi
 }
 
@@ -77,13 +77,13 @@ CheckCorrect() {
         ConfigItem=$(sed -n "/$1/p" $3 | sed 's/^[ \t]*//g' | head -n1)
         if [[ $ConfigItem != $2 ]];then
             Display --text "$3   $1" --result "NotFit" --color RED
-            echo -e "配置值错误\t$3  $1 (exp: $2)" >>  $SUGFILE
+            echo "配置值错误\t$3  $1 (exp: $2)" >>  $SUGFILE
         else
             Display --text "$3   $1" --result "OK" --color GREEN
         fi
     else
         Display --text "$3" --result "NotExists" --color RED
-        echo -e "配置值错误\t$3  (exp: $2)" >>  $SUGFILE
+        echo "配置值错误\t$3  (exp: $2)" >>  $SUGFILE
     fi
 }
 
@@ -96,30 +96,30 @@ CheckRsyslog() {
         item_val=$(echo $item_line | awk '{print $2}')
         if [[ $item_val != $item_val_expect ]];then
             Display --text "$configfile  $1" --result "NotFit" --color RED
-            echo -e "Rsyslog配置\t$configfile (exp:$2)" >>  $SUGFILE
+            echo "Rsyslog配置\t$configfile (exp:$2)" >>  $SUGFILE
         else
             Display --text "$configfile  $1" --result "OK" --color GREEN
         fi
     else
         Display --text "$configfile  $1 (exp:$2)" --result "NotFit" --color RED
-        echo -e "Rsyslog配置\t$configfile  $1 (exp:$2)" >>  $SUGFILE
+        echo "Rsyslog配置\t$configfile  $1 (exp:$2)" >>  $SUGFILE
     fi
 }
 
 CheckPerm() {
     file=$1
     perm_expect=$2
-    if [ -e $file ];then
-        perm=$(stat -c %a $file)
-        if [ $perm -gt $perm_expect ];then
-            Display --text "$file" --result "NotFit" --color RED
-            echo -e "文件权限\t${file} (exp:${perm_expect})" >> $SUGFILE
+    if [ -e ${file} ];then
+        perm=$(stat -c %a ${file})
+        if [ ${perm} -gt ${perm_expect} ];then
+            Display --text "${file}  ${perm}" --result "NotFit" --color RED
+            echo "文件权限\t${file} (exp:${perm_expect})" >> $SUGFILE
         else
-            Display --text "$file    $perm" --result "OK" --color GREEN
+            Display --text "${file}  ${perm}" --result "OK" --color GREEN
         fi
     else
         Display --text "$file" --result "NotExists" --color RED
-        echo -e "文件权限\t${file}  $1 (exp:${perm_expect})" >> $SUGFILE
+        echo "文件权限\t${file}  $1 (exp:${perm_expect})" >> $SUGFILE
     fi
 }
 
@@ -282,3 +282,4 @@ Display --text "================================================================
 Display --text "检查结束，请在$LOGFILE 查看输出结果"
 Display --text "以下为修改建议:"
 cat $SUGFILE
+

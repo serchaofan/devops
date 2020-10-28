@@ -68,9 +68,10 @@ Display --text "================================================================
 
 CheckExists() {
     if [[ $(sed -n "/$1/p" $2) == '' ]];then
-        Display --text "$2CheckItem:    $1" --result "NotExists" --color RED
+        Display --text "$2    $1" --result "NotExists" --color RED
+        echo -e "无配置项\t$2    $1" >> $SUGFILE
     else
-        Display --text "$2CheckItem:    $1" --result "Exists" --color GREEN
+        Display --text "$2    $1" --result "Exists" --color GREEN
     fi
 }
 
