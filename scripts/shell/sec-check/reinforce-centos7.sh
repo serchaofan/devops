@@ -1,7 +1,7 @@
 #!/bin/bash
 
-CHRONY_SERVER=192.168.3.100
-DNS_SERVER=192.168.3.100
+CHRONY_SERVER=192.168.13.100
+DNS_SERVER=192.168.13.100
 
 chown root:root /etc/passwd /etc/shadow /etc/group /etc/gshadow
 chmod 0644 /etc/group
