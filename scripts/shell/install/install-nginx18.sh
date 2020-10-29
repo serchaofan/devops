@@ -4,6 +4,9 @@ yum install -y openssl-devel pcre-devel zlib-devel libxml2* libxslt* gcc gcc-c++
 wget -O /tmp/nginx-1.18.0.tar.gz http://nginx.org/download/nginx-1.18.0.tar.gz
 cd /tmp && tar -xzf nginx-1.18.0.tar.gz && cd nginx-1.18.0
 
+useradd nginx -s /sbin/nologin
+mkdir -p /var/lib/nginx/tmp/client_body
+
 ./configure --prefix=/usr/share/nginx \
 			--sbin-path=/usr/sbin/nginx \
 			--modules-path=/usr/lib64/nginx/modules \
@@ -36,4 +39,5 @@ cd /tmp && tar -xzf nginx-1.18.0.tar.gz && cd nginx-1.18.0
 
 make && make install 
 sleep 1
-nginx -v
+echo -e "\033[32m=========Nginx安装完成=========\033[0m"
+echo -e "$(nginx -v)"
