@@ -15,7 +15,7 @@ systemctl stop firewalld
 # 1.3 config system.conf
 sed -i '/DefaultLimitNOFILE/c DefaultLimitNOFILE=65535' /etc/systemd/system.conf
 sed -i '/DefaultLimitMEMLOCK/c DefaultLimitMEMLOCK=infinity' /etc/systemd/system.conf
-sed -i '/DefaultLimitMEMLOCK/c DefaultLimitMEMLOCK=32000' /etc/systemd/system.conf
+sed -i '/DefaultLimitNPROC/c DefaultLimitNPROC=32000' /etc/systemd/system.conf
 systemctl daemon-reexec
 
 # 1.4 check if elasticsearch-7.5.0 and kibana-7.5.0 exists
