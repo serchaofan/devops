@@ -41,7 +41,7 @@ Display() {
     else
         RESULTPART=" [ ${COLOR}${RESULT}${NORMAL} ]"
         LINESIZE=$(echo "${TEXT}" | wc -m | tr -d ' ')
-        SPACES=$((80 - LINESIZE))
+        SPACES=$((100 - LINESIZE))
         echo "\033[0C${TEXT}\033[${SPACES}C${RESULTPART}" | tee -a $LOGFILE
     fi
 }
@@ -65,25 +65,31 @@ Display --text "================================================================
 
 
 CheckExists() {
-    if [[ $(sed -n "/$1/p" $2) == '' ]];then
-        Display --text "$2   $1" --result "NotExists" --color RED
+    item=$1
+    file=$2
+    if [ -z $(sed -n "/${item}/p" ${file}) ];then
+        Display --text "${file}  ${item}" --result "NotExists" --color RED
+        echo "配置值不存在\t${file}  (exp: ${item})" >>  $SUGFILE
     else
-        Display --text "$2   $1" --result "Exists" --color GREEN
+        Display --text "${file}  ${item}" --result "Exists" --color GREEN
     fi
 }
 
 CheckCorrect() {
-    if [[ -e $3 ]];then
-        ConfigItem=$(sed -n "/$1/p" $3 | sed 's/^[ \t]*//g' | head -n1)
-        if [[ $ConfigItem != $2 ]];then
-            Display --text "$3   $1" --result "NotFit" --color RED
-            echo "配置值错误\t$3  $1 (exp: $2)" >>  $SUGFILE
+    file=$3
+    item=$1
+    item_expect=$2
+    if [ -e ${file} ];then
+        ConfigItem=$(sed -n "/${item}/p" ${file} | sed 's/^[ \t]*//g' | head -n1)
+        if [ "${ConfigItem}" = "${item_expect}" ];then
+            Display --text "${file}   ${item}" --result "NotFit" --color RED
+            echo "配置值错误\t${file}  ${item}  (exp: ${item_expect})" >>  $SUGFILE
         else
-            Display --text "$3   $1" --result "OK" --color GREEN
+            Display --text "${file}   ${item}" --result "OK" --color GREEN
         fi
     else
-        Display --text "$3" --result "NotExists" --color RED
-        echo "配置值错误\t$3  (exp: $2)" >>  $SUGFILE
+        Display --text "${file}  ${item}" --result "NotExists" --color RED
+        echo "配置值错误\t${file}  (exp: ${item_expect})" >>  $SUGFILE
     fi
 }
 
@@ -91,18 +97,18 @@ CheckRsyslog() {
     configfile="/etc/rsyslog.d/50-default.conf"
     item=$1
     item_val_expect=$2
-    item_line=$(sed -n "/$item/p" $configfile)
-    if [[ ${item_line:0:1} != '#' ]];then
-        item_val=$(echo $item_line | awk '{print $2}')
-        if [[ $item_val != $item_val_expect ]];then
-            Display --text "$configfile  $1" --result "NotFit" --color RED
-            echo "Rsyslog配置\t$configfile (exp:$2)" >>  $SUGFILE
-        else
-            Display --text "$configfile  $1" --result "OK" --color GREEN
-        fi
+    item_line=$(sed -n "/${item}/p" ${configfile} | grep -v '^#' | grep "^${item}")
+    if [ -z "${item_line}" ];then
+        Display --text "${configfile}  ${item}" --result "ItemNotExists" --color YELLOW
+        echo "Rsyslog配置\t$configfile  (exp: ${item_val_expect})" >>  $SUGFILE
     else
-        Display --text "$configfile  $1 (exp:$2)" --result "NotFit" --color RED
-        echo "Rsyslog配置\t$configfile  $1 (exp:$2)" >>  $SUGFILE
+        item_val=$(echo $item_line | awk '{print $2}')
+        if [ "$item_val" != "$item_val_expect" ];then
+            Display --text "$configfile  ${item}" --result "NotFit" --color RED
+            echo "Rsyslog配置\t$configfile  (exp: ${item_val_expect})" >>  $SUGFILE
+        else
+            Display --text "$configfile  ${item}" --result "OK" --color GREEN
+        fi
     fi
 }
 
@@ -113,24 +119,24 @@ CheckPerm() {
         perm=$(stat -c %a ${file})
         if [ ${perm} -gt ${perm_expect} ];then
             Display --text "${file}  ${perm}" --result "NotFit" --color RED
-            echo "文件权限\t${file} (exp:${perm_expect})" >> $SUGFILE
+            echo "文件权限\t${file}  (exp: ${perm_expect})" >> $SUGFILE
         else
             Display --text "${file}  ${perm}" --result "OK" --color GREEN
         fi
     else
         Display --text "$file" --result "NotExists" --color RED
-        echo "文件权限\t${file}  $1 (exp:${perm_expect})" >> $SUGFILE
+        echo "文件权限\t${file}  $1  (exp: ${perm_expect})" >> $SUGFILE
     fi
 }
 
 CheckServDown() {
     for service in $@;do
         service=$service".service"
-        if [[ $(systemctl list-unit-files | grep $service) != '' ]];then
+        if [ -z $(systemctl list-unit-files | grep $service) ];then
             is_enabled=$(systemctl list-unit-files | grep $service | awk '{print $2}')
             is_active=$(systemctl list-units | grep $service | awk '{print $3}')
-            if [[ ! -z ${is_active} ]];then
-                if [[ ${is_active} == 'active' ]];then
+            if [ ! -z ${is_active} ];then
+                if [ ${is_active} = 'active' ];then
                     Display --text "$service" --result "$is_active | $is_enabled" --color YELLOW
                 else
                     Display --text "$service" --result "$is_active | $is_enabled" --color GREEN
@@ -238,10 +244,10 @@ CheckCorrect "PermitRootLogin" "PermitRootLogin yes" /etc/ssh/sshd_config
 
 Display --text "====================================================================="
 Display --text "[+] 2.4.3.  启用防火墙"
-if [[ $(systemctl is-active firewalld) == 'active' ]];then
-    Display --text "Firewalld正在运行" --result "OK" --color GREEN
+if [ $(systemctl is-active firewalld) = 'active' ];then
+    Display --text "Firewalld Is Running" --result "OK" --color GREEN
 else
-    Display --text "Firewalld未启动" --result "WARNING" --color RED
+    Display --text "Firewalld Is Not Active" --result "WARNING" --color RED
 fi
 
 ################################################################################
@@ -262,8 +268,12 @@ CheckExists "TIMEOUT" /etc/profile
 
 Display --text "====================================================================="
 Display --text "[+] 2.5.3.系统时间同步"
-Display --text "当前ntpserver:"
-Display --text "$(grep 'server' /etc/ntp.conf | grep -v '^#' | awk '{print $2}')"
+if [ ! -e "/etc/ntp.conf" ];then
+    Display --text "Pls Check If Ntp is Installed, Can't Find Config /etc/ntp.conf" --result "WARNING" --color YELLOW
+else
+    Display --text "当前ntpserver:"
+    Display --text "$(grep 'server' /etc/ntp.conf | grep -v '^#' | awk '{print $2}')"
+fi
 ################################################################################
 
 Display --text "====================================================================="
