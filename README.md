@@ -2,3 +2,4 @@
 - [dockerfile](dockerfile/centos)
 - [python](scripts/python)
 - [shell](scripts/shell)
+- [go](scripts/go)
