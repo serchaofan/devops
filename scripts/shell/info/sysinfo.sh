@@ -8,9 +8,9 @@
 # CPU Info
 echo  -e "\033[32m
 CPU Info >>>
-    Model:\t $(grep 'model name' /proc/cpuinfo | awk -F: '{print $2}')
-    Frequency:\t $(grep 'cpu MHz' /proc/cpuinfo | awk -F: '{print $2}')MHz
-    Cache:\t $(grep 'cache size' /proc/cpuinfo | awk -F: '{print $2}')
+    Model:\t $(grep 'model name' /proc/cpuinfo | awk -F: '{print $2}' | uniq )
+    Frequency:\t $(grep 'cpu MHz' /proc/cpuinfo | awk -F: '{print $2}' | uniq )MHz
+    Cache:\t $(grep 'cache size' /proc/cpuinfo | awk -F: '{print $2}' | uniq )
     Process Count: $(grep -c processor /proc/cpuinfo)
 \033[0m"
 
