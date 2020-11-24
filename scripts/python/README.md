@@ -73,4 +73,14 @@
 		send = 5, success = 5, failed = 0, success_percent = 100.0%
 		MaxRespTime = 20.17ms, MinRespTime = 14.73ms, AverRespTime = 16.39ms
 	```
+- [AlertAnalysis](./alertanalysis.py)
+	```
+	收集数据库中记录的告警信息并发送邮件告警统计
+	通过pandas dataframe对数据进行初步统计，并绘制成html表格
+	调用了企业微信API获取部门的所有人邮箱。可单发、可群发
+	最后调用smtplib库进行邮件发送
 
+	python3 alertanalysis.py --lastday   发送昨日统计
+	python3 alertanalysis.py --lastweek  发送上周统计
+	python3 alertanalysis.py --lastmonth 发送上月统计
+	```
