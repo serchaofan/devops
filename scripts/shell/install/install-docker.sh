@@ -1,5 +1,5 @@
 # get docker
-echo -e "\033[31mGetting Docker...\033[0m"
+echo -e "\033[32mGetting Docker...\033[0m"
 yum install -y yum-utils device-mapper-persistent-data lvm2
 yum-config-manager --add-repo https://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
 yum makecache fast
