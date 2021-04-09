@@ -60,15 +60,13 @@ def start_tcping(host, port, count, interval, t):
             MaxRespTime = max(spendtime_list)
             MinRespTime = min(spendtime_list)
             AverRespTime = round(np.mean(spendtime_list), 2)
-
-    except KeyboardInterrupt:
-        print("Ctrl-C")
-    finally:
         print(f'''
 Tcping Results: {host}:{port}
   send = {count}, success = {success}, failed = {failed}, success_percent = {success_per}%
   MaxRespTime = {MaxRespTime}ms, MinRespTime = {MinRespTime}ms, AverRespTime = {AverRespTime}ms
       ''')
+    except KeyboardInterrupt:
+        print("Ctrl-C")
 
 
 if __name__ == '__main__':

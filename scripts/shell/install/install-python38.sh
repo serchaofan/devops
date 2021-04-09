@@ -1,17 +1,28 @@
 yum groups mark install "Development Tools"
 yum groups mark convert "Development Tools"
 yum groups install -y "Development Tools"
-yum install -y libffi-devel openssl-devel
-curl -L https://www.python.org/ftp/python/3.8.2/Python-3.8.2.tgz -o ~/Python-3.8.2.tgz && tar -xzf ~/Python-3.8.2.tgz
-cd ~/Python-3.8.2 && ./configure && make && make install
-mkdir ~/.pip
+yum install -y libffi-devel openssl-devel gcc
+curl -L https://www.python.org/ftp/python/3.8.9/Python-3.8.9.tgz -o ~/Python-3.8.9.tgz && tar -xzf ~/Python-3.8.9.tgz
+cd ~/Python-3.8.9 && ./configure && make && make install
+mkdir -p ~/.pip
 cat << EOF > ~/.pip/pip.conf
 [global]
 trusted-host=mirrors.aliyun.com
-index-url=https://mirrors.aliyun.com/pypi/simple 
+index-url=https://mirrors.aliyun.com/pypi/simple
 EOF
 
 pip3 install -U pip
+sleep 3
+
+checkPath=`echo $PATH | sed '\/usr\/local\/bin/p' -n | wc -l`
+if [[ "$checkPath" == 0 ]];then
+  echo "export PATH=/usr/local/bin:\$PATH" >> /etc/profile
+  source /etc/profile
+  echo "$PATH"
+elif [[ "$checkPath" == 1 ]];then
+  echo "$PATH"
+fi
+
 PYTHON_VER=$(python3 --version | awk -F" " '{print $2}')
 PIP_VER=$(pip3 --version | awk -F" " '{print $2}')
 echo -e "\033[32m
