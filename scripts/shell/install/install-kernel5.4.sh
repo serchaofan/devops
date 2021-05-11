@@ -2,10 +2,10 @@
 cat <<EOF > /etc/yum.repos.d/elrepo.repo
 [elrepo]
 name=ELRepo.org Community Enterprise Linux Repository - el7
-baseurl=http://mirrors.tuna.tsinghua.edu.cn/elrepo/elrepo/el7/$basearch/
-        http://mirrors.coreix.net/elrepo/elrepo/el7/$basearch/
-        http://mirror.rackspace.com/elrepo/elrepo/el7/$basearch/
-        http://linux-mirrors.fnal.gov/linux/elrepo/elrepo/el7/$basearch/
+baseurl=http://mirrors.tuna.tsinghua.edu.cn/elrepo/elrepo/el7/\$basearch/
+        http://mirrors.coreix.net/elrepo/elrepo/el7/\$basearch/
+        http://mirror.rackspace.com/elrepo/elrepo/el7/\$basearch/
+        http://linux-mirrors.fnal.gov/linux/elrepo/elrepo/el7/\$basearch/
 mirrorlist=http://mirrors.elrepo.org/mirrors-elrepo.el7
 enabled=1
 gpgcheck=1
@@ -14,10 +14,10 @@ protect=0
 
 [elrepo-kernel]
 name=ELRepo.org Community Enterprise Linux Kernel Repository - el7
-baseurl=http://mirrors.tuna.tsinghua.edu.cn/elrepo/kernel/el7/$basearch/
-        http://mirrors.coreix.net/elrepo/kernel/el7/$basearch/
-        http://mirror.rackspace.com/elrepo/kernel/el7/$basearch/
-        http://linux-mirrors.fnal.gov/linux/elrepo/kernel/el7/$basearch/
+baseurl=http://mirrors.tuna.tsinghua.edu.cn/elrepo/kernel/el7/\$basearch/
+        http://mirrors.coreix.net/elrepo/kernel/el7/\$basearch/
+        http://mirror.rackspace.com/elrepo/kernel/el7/\$basearch/
+        http://linux-mirrors.fnal.gov/linux/elrepo/kernel/el7/\$basearch/
 mirrorlist=http://mirrors.elrepo.org/mirrors-elrepo-kernel.el7
 enabled=1
 gpgcheck=1
