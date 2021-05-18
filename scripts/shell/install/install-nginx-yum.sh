@@ -11,7 +11,8 @@ module_hotfixes=true
 EOF
 
 yum makecache fast
-yum install -f nginx
+yum install -y nginx
 sleep 1
+source /etc/profile
 echo -e "\033[32m=========Nginx安装完成=========\033[0m"
 echo -e "$(nginx -v)"
