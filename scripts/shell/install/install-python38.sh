@@ -1,7 +1,8 @@
 yum groups mark install "Development Tools"
 yum groups mark convert "Development Tools"
 yum groups install -y "Development Tools"
-yum install -y libffi-devel openssl-devel gcc
+yum install -y gcc
+yum install -y zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel libffi-devel
 curl -L https://www.python.org/ftp/python/3.8.9/Python-3.8.9.tgz -o ~/Python-3.8.9.tgz && tar -xzf ~/Python-3.8.9.tgz
 cd ~/Python-3.8.9 && ./configure && make && make install
 mkdir -p ~/.pip
