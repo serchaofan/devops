@@ -24,6 +24,8 @@ elif [[ "$checkPath" == 1 ]];then
   echo "$PATH"
 fi
 
+wget https://bootstrap.pypa.io/get-pip.py && python3 get-pip.py
+
 PYTHON_VER=$(python3 --version | awk -F" " '{print $2}')
 PIP_VER=$(pip3 --version | awk -F" " '{print $2}')
 echo -e "\033[32m
