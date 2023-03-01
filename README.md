@@ -1,5 +1,7 @@
-## 存放Shell Scripts, Dockerfile, Python
 - [dockerfile](dockerfile/centos)
-- [python](scripts/python)
-- [shell](scripts/shell)
-- [go](scripts/go)
+- [scripts](scripts)
+    - [python](scripts/python)
+    - [shell](scripts/shell)
+    - [go](scripts/go)
+- [kubernetes](kubernetes)
+    - [monitor](kubernetes/monitor)
